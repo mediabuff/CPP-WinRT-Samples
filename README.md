@@ -1,7 +1,11 @@
 # C++ / WinRT
 
-CPP-WinRT-Samples contains UWP control samples to use Modern C++ 
+It contains UWP control samples to using Modern C++.
 
 More info https://github.com/Microsoft/cppwinrt
+
+Next Release 
+
+CommandBar and SplitView controls 
 
 
