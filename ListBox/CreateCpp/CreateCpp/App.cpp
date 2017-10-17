@@ -23,6 +23,7 @@ public:
 	}
 	virtual ~App() = default;
 	ListBox lstBox;
+	TextBlock txtStatus;
 
 	static IInspectable MakeString(hstring captionText)
 	{
@@ -49,9 +50,28 @@ public:
 		return text;
 	}
 
-	void App::lstBoxSelectionChange(IInspectable const& sender, const SelectionChangedEventHandler& args)
+	void App::lstBoxSelectionChange(IInspectable const& sender, const SelectionChangedEventArgs& args) const
 	{
+		ListBox lstSelect = sender.as<ListBox>();
+		auto temp = lstSelect.SelectedItems();
+		auto count = temp.Size();
 
+		std::wstring tempString;
+
+		if(count > 0)
+			tempString = L" User has Clicked : ";
+
+		for (IInspectable& item : temp)
+		{
+			IPropertyValue eachItem = item.as<IPropertyValue>();
+			tempString = tempString + L"   "  + eachItem.GetString().c_str();
+		}
+
+		auto item = PropertyValue::CreateString(tempString);
+		IPropertyValue eachItem = item.as<IPropertyValue>();
+		hstring selectItem = eachItem.GetString();
+		txtStatus.Text(selectItem);
+		
 	}
 
 
@@ -64,15 +84,18 @@ public:
 		lstBox.SelectionMode(SelectionMode::Multiple);
 				
 		lstBox.SelectionChanged({ this, &App::lstBoxSelectionChange });
-				
+
+		
 		StackPanel panelList;
 		panelList.Children().Append(lstBox);
 		
 		auto txtHeader = CreateTextBlock(L"Select the Language");
+		txtStatus = CreateTextBlock(L"");
 	
 		StackPanel sPanel;
 		sPanel.Children().Append(txtHeader);
 		sPanel.Children().Append(panelList);
+		sPanel.Children().Append(txtStatus);
 
 
 		Window window = Window::Current();
